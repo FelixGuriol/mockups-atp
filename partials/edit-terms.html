@@ -54,28 +54,9 @@
             </div>
           </div>
           <div>
-            <label class="f-label">Tenant Lease Start Billing Cycle</label>
+            <label class="f-label">Monthly Amount</label>
             <div class="flex gap-2">
-              <div class="seg shrink-0" role="group" aria-label="Has tenant lease start billing cycle"
-                data-toggle-field="hasCycleDate">
-                <button type="button" data-yesno="No" aria-pressed="true">No</button>
-                <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
-              </div>
-              <div data-when-field="hasCycleDate" data-when-value="Yes" class="f-date">
-                <input type="text" class="f-input" data-field="cycleDate" placeholder="YYYY/MM/DD" />
-                <button type="button" class="f-cal" title="Choose date" aria-label="Choose tenant lease start billing cycle date">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                    stroke-linecap="round" aria-hidden="true">
-                    <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div>
-            <label class="f-label">Initial Amount</label>
-            <div class="flex gap-2">
-              <div class="seg shrink-0" role="group" aria-label="Has initial amount"
+              <div class="seg shrink-0" role="group" aria-label="Has monthly amount"
                 data-toggle-field="hasInitialAmount">
                 <button type="button" data-yesno="No" aria-pressed="true">No</button>
                 <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
@@ -129,7 +110,7 @@
                 data-when-field="escalationType" data-when-value="Fixed|Percentage" />
             </div>
           </div>
-          <div>
+          <div data-when-field="escalationType" data-when-value="CPI">
             <label class="f-label">CPI Index</label>
             <div class="flex gap-2">
               <select class="f-select sm:max-w-[12rem]" data-field="cpiIndex">

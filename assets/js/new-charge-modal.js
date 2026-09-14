@@ -49,7 +49,8 @@
 
     /* The first term's start date and amount come from the charge. */
     var values = window.CHARGE_LIST.resolve(entered);
-    var symbol = values.currency === 'US Dollars' ? 'US$' : 'COP$';
+    /* The preview lists schedule rows, so it prices them in the schedule currency. */
+    var symbol = values.scheduleCurrency === 'US Dollars' ? 'US$' : 'COP$';
     var preview = window.SCHEDULE_PREVIEW.build(values, symbol);
 
     window.REBUILD_MODAL.open(values.chargeType, {
@@ -82,8 +83,20 @@
       }
     };
 
+    /* Billing currency matches the schedule currency by default: it follows every change
+       to the schedule currency until someone picks a billing currency of their own. */
+    var billingChosen = false;
+
     el.onchange = function (e) {
-      if (e.target.closest('[data-field]')) window.CONDITIONS.apply(el);
+      var field = e.target.closest('[data-field]');
+      if (!field) return;
+
+      if (field.dataset.field === 'billingCurrency') billingChosen = true;
+      if (field.dataset.field === 'scheduleCurrency' && !billingChosen) {
+        el.querySelector('[data-field="billingCurrency"]').value = field.value;
+      }
+
+      window.CONDITIONS.apply(el);
     };
 
     window.loadPartial('new-charge').then(function (fragment) {

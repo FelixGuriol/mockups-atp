@@ -4,7 +4,7 @@
 
 (function () {
   /* Fields inside each term period dropdown, filled per period. */
-  var PERIOD_FIELDS = ['termsStartDate', 'cycleDate', 'initialAmount', 'billingFrequency',
+  var PERIOD_FIELDS = ['termsStartDate', 'initialAmount', 'billingFrequency',
     'escalationType', 'escalationAmount', 'escalationFrequency', 'escalationAnniversary',
     'cpiIndex', 'cpiAdjustment'];
 
@@ -140,7 +140,7 @@
       if (e.target === el || e.target.closest('[data-terms-close]')) return close();
 
       if (e.target.closest('[data-add-term]')) {
-        return window.ADD_TERM_MODAL.open(charge.terms.currency === 'US Dollars' ? 'US$' : 'COP$');
+        return window.ADD_TERM_MODAL.open(charge.terms.scheduleCurrency === 'US Dollars' ? 'US$' : 'COP$');
       }
 
       /* Each button sits inside its own period, so it previews that period's range. */

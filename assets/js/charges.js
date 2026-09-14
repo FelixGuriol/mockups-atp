@@ -31,7 +31,10 @@ var CHARGES = [
       startDate: '2025/01/01',
       hasEndDateOverride: 'Yes',
       endDateOverride: '2034/12/31',
-      currency: 'US Dollars',
+      hasCycleDate: 'Yes',
+      cycleDate: '2025/01/01',
+      scheduleCurrency: 'US Dollars',
+      billingCurrency: 'US Dollars',
       initialCharge: '0.01',
       billingFrequency: 'Monthly',
       escalationType: 'CPI',
@@ -44,8 +47,6 @@ var CHARGES = [
     termPeriods: [
       {
         termsStartDate: '2025/01/01',
-        hasCycleDate: 'Yes',
-        cycleDate: '2025/01/01',
         hasInitialAmount: 'Yes',
         initialAmount: '0.01',
         billingFrequency: 'Monthly',
@@ -59,8 +60,6 @@ var CHARGES = [
       },
       {
         termsStartDate: '2026/07/01',
-        hasCycleDate: 'Yes',
-        cycleDate: '2026/07/01',
         hasInitialAmount: 'Yes',
         initialAmount: '891.46',
         billingFrequency: 'Monthly',
@@ -74,8 +73,6 @@ var CHARGES = [
       },
       {
         termsStartDate: '2027/01/01',
-        hasCycleDate: 'Yes',
-        cycleDate: '2027/01/01',
         hasInitialAmount: 'Yes',
         initialAmount: '1010.32',
         billingFrequency: 'Monthly',
@@ -98,7 +95,8 @@ var CHARGES = [
    --------------------------------------------------------------------------- */
 
 function symbolOf(c) {
-  return c.terms.currency === 'US Dollars' ? 'US$ ' : 'COP$ ';
+  /* Amounts on the card are schedule amounts, so they take the schedule currency. */
+  return c.terms.scheduleCurrency === 'US Dollars' ? 'US$ ' : 'COP$ ';
 }
 
 function money(symbol, value) {
@@ -151,9 +149,10 @@ function escalationText(symbol, p) {
 function chargeFields(c) {
   var t = c.terms;
   return [
-    { label: 'Initial Charge', value: money(symbolOf(c), t.initialCharge) },
+    { label: 'Initial Monthly Charge', value: money(symbolOf(c), t.initialCharge) },
     { label: 'Starts on', value: t.startDate + ' ' + t.startsOn },
     { label: 'End Date Override', value: t.hasEndDateOverride === 'Yes' ? t.endDateOverride : 'No' },
+    { label: 'Tenant Lease Start Billing Cycle', value: t.hasCycleDate === 'Yes' ? t.cycleDate : '' },
   ];
 }
 
@@ -163,7 +162,6 @@ function termFields(c, current) {
   var symbol = symbolOf(c);
   var list = [
     { label: 'Current Charge', value: money(symbol, p.initialAmount) + ' ' + p.billingFrequency },
-    { label: 'Tenant Lease Start Billing Cycle', value: p.hasCycleDate === 'Yes' ? p.cycleDate : '' },
     { label: 'Escalation', value: escalationText(symbol, p) },
     { label: 'Escalation Frequency', value: p.escalationFrequency },
   ];
@@ -325,13 +323,14 @@ function chargeFromForm(values) {
       startDate: v.startDate,
       hasEndDateOverride: v.hasEndDateOverride,
       endDateOverride: v.endDateOverride,
-      currency: v.currency,
+      hasCycleDate: v.hasCycleDate,
+      cycleDate: v.hasCycleDate === 'Yes' ? v.cycleDate : '',
+      scheduleCurrency: v.scheduleCurrency,
+      billingCurrency: v.billingCurrency,
       initialCharge: v.initialCharge || '0.00',
     },
     termPeriods: [{
       termsStartDate: v.termsStartDate,
-      hasCycleDate: v.hasCycleDate,
-      cycleDate: v.cycleDate,
       hasInitialAmount: v.hasInitialAmount,
       initialAmount: v.initialAmount,
       billingFrequency: v.billingFrequency,
