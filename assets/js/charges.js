@@ -1,6 +1,6 @@
 /* Charge Schedule tab: placeholder charge data rendered as cards or as a table.
    The gear on each card opens a menu: "Edit Charge" opens the modal in charge-modal.js,
-   "Edit Terms" the one in terms-modal.js. */
+   "Edit Terms" the one in terms-modal.js, "Update End Date" the one in end-date-modal.js. */
 
 /* Escalation rows for the Renta Torre charge. */
 var RENTA_TORRE_SCHEDULE = [
@@ -208,6 +208,8 @@ function gearMenu(i) {
     '      class="block w-full text-left px-4 py-2 text-sm text-neutral-800 hover:bg-neutral-100 transition-colors">Edit Charge</button>',
     '    <button type="button" role="menuitem" data-charge-action="terms" data-index="' + i + '"',
     '      class="block w-full text-left px-4 py-2 text-sm text-neutral-800 hover:bg-neutral-100 transition-colors">Edit Terms</button>',
+    '    <button type="button" role="menuitem" data-charge-action="end-date" data-index="' + i + '"',
+    '      class="block w-full text-left px-4 py-2 text-sm text-neutral-800 hover:bg-neutral-100 transition-colors">Update End Date</button>',
     '    <button type="button" role="menuitem" data-charge-action="delete" data-index="' + i + '"',
     '      class="block w-full text-left px-4 py-2 text-sm text-neutral-800 hover:bg-neutral-100 transition-colors">Delete Charge</button>',
     '  </div>',
@@ -321,8 +323,9 @@ function chargeFromForm(values) {
       chargeType: v.chargeType,
       startsOn: v.startsOn,
       startDate: v.startDate,
-      hasEndDateOverride: v.hasEndDateOverride,
-      endDateOverride: v.endDateOverride,
+      /* New Charge does not ask for one; the gear menu's Update End Date sets it. */
+      hasEndDateOverride: 'No',
+      endDateOverride: '',
       hasCycleDate: v.hasCycleDate,
       cycleDate: v.hasCycleDate === 'Yes' ? v.cycleDate : '',
       scheduleCurrency: v.scheduleCurrency,
@@ -423,6 +426,9 @@ window.onChromeReady = function () {
         window.CHARGE_MODAL.open(charge);
       } else if (action.dataset.chargeAction === 'terms') {
         window.TERMS_MODAL.open(charge);
+      } else if (action.dataset.chargeAction === 'end-date') {
+        /* The end date shows on the card and bounds its current term, so repaint. */
+        window.END_DATE_MODAL.open(charge, { onSave: paintCharges });
       } else if (window.confirm('Delete ' + charge.name + '? This cannot be undone.')) {
         CHARGES.splice(Number(action.dataset.index), 1);
         paintCharges();

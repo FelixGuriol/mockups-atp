@@ -66,6 +66,20 @@
             </div>
           </div>
           <div>
+            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Billing Frequency</label>
+            <select class="f-select" data-field="billingFrequency">
+              <option>Monthly</option>
+              <option>Quarterly</option>
+              <option>Semi-Annual</option>
+              <option>Annual</option>
+            </select>
+          </div>
+          <div class="hidden md:block" aria-hidden="true"></div>
+          <div>
+            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Frequency (months)</label>
+            <input type="text" class="f-input" data-field="escalationFrequency" />
+          </div>
+          <div>
             <label class="f-label">Escalation Anniversary</label>
             <div class="flex gap-2">
               <div class="seg shrink-0" role="group" aria-label="Escalates with lease commencement"
@@ -83,19 +97,6 @@
                 </button>
               </div>
             </div>
-          </div>
-          <div>
-            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Frequency (months)</label>
-            <input type="text" class="f-input" data-field="escalationFrequency" />
-          </div>
-          <div>
-            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Billing Frequency</label>
-            <select class="f-select" data-field="billingFrequency">
-              <option>Monthly</option>
-              <option>Quarterly</option>
-              <option>Semi-Annual</option>
-              <option>Annual</option>
-            </select>
           </div>
           <div>
             <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Type and Amount</label>

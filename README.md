@@ -33,6 +33,7 @@ Then browse to http://localhost:8000
     assets/js/pages.js      Placeholder content + section renderers for 12 tabs
     assets/js/charges.js    Charge Schedule data, cards, table, view toggle, gear menu
     assets/js/new-charge-modal.js New Charge popup, opened by the Add button
+    assets/js/end-date-modal.js   Update End Date popup, opened from the gear menu
     assets/js/charge-modal.js  Edit Charge popup: charge level fields + rent adjustments
     assets/js/adjustment-modal.js Create / edit popup for a rent adjustment row
     assets/js/terms-modal.js   Edit Terms popup: one dropdown per term period
@@ -43,6 +44,7 @@ Then browse to http://localhost:8000
     assets/js/partials.js   Fetches partials/*.html once, clones per open
 
     partials/new-charge.html   New Charge popup markup (charge + first term)
+    partials/end-date.html     Update End Date popup markup (End Date Override only)
     partials/edit-charge.html  Edit Charge popup markup (Charge + Rent Adjustments tabs)
     partials/adjustment-row.html  Rent adjustment row popup markup
     partials/edit-terms.html   Edit Terms popup markup (the term period dropdowns)
@@ -55,7 +57,7 @@ Then browse to http://localhost:8000
 A card shows two groups, both derived from the charge data rather than stored as display
 text, so a card and the popups can never disagree:
 
-- **the charge** - initial charge, Starts on and End Date Override, matching Edit Charge.
+- **the charge** - initial charge, Starts on, End Date Override and the billing cycle date.
 - **the current term** - the term period that covers today's date, headed by which term
   it is and the dates it runs, matching that period's dropdown in Edit Terms.
 
@@ -92,15 +94,15 @@ Section kinds available in `PAGES`: `tiles`, `fields`, `table`, `cards`, `accord
 
 ## Edit Charge and Edit Terms modals
 
-The gear on each charge card opens a menu with **Edit Charge**, **Edit Terms** and
-**Delete Charge**. The two edit popups are separate files and separate modules, and only
+The gear on each charge card opens a menu with **Edit Charge**, **Edit Terms**,
+**Update End Date** and **Delete Charge**. The two edit popups are separate files and separate modules, and only
 one of them is ever open - they are siblings at z-40, not stacked.
 
 **Edit Charge** (`partials/edit-charge.html`, also reached from the card's Details button
 and the description/Details links in table view) holds everything that belongs to the
 charge as a whole, in two sub-tabs:
 
-- **Charge** - charge type, initial charge, Starts On / Start Date and End Date Override,
+- **Charge** - charge type, initial charge, Starts On / Start Date and the billing cycle date,
   plus Save / Cancel.
 - **Rent Adjustments** - three tables, in this order: Rent Abatements (FromDate / EndDate /
   Abatement Amount / Abatement Percentage / Reason / Comments), Rent Reductions (the same,
@@ -130,6 +132,20 @@ charge as a whole, in two sub-tabs:
 **Edit Terms** (`partials/edit-terms.html`) holds the term periods only: "Add New Term",
 one collapsible dropdown per period, and Cancel. It has no sub-tabs: each period is
 saved from its own "Rebuild Schedule" button, so there is no popup-wide Save.
+
+**Update End Date** (`partials/end-date.html`) is the only place the End Date Override is
+set - neither Edit Charge nor New Charge carries the field, and a new charge starts without
+one. It opens on Yes with 2026/05/31 filled in (`DEFAULT_END_DATE`), and edits just that field,
+with the same No/Yes switch: Yes needs a date, and No clears any date left in the box.
+Save first opens a preview (z-60) of the rows the change affects, built from the charge's
+own terms by `SCHEDULE_PREVIEW.endDateChange(charge, newEnd)`: only the stretch between
+the old end and the new one changes, so moving the end earlier lists the rows it removes,
+moving it later lists the rows it creates, and the one period the new end cuts through is
+Modified (billed for the days it keeps). An open end is looked at 24 months ahead. Then
+comes the Change Reason confirmation; only once that is confirmed is the charge updated
+and the cards repainted, since the end date shows on the card and bounds the last term -
+an end date already in the past leaves no current term. Saving an unchanged date just
+closes the popup.
 
 Both close on the X, Cancel, backdrop click or Escape. Delete Charge asks for confirmation
 and removes the card from the mockup.
@@ -209,7 +225,7 @@ term period and passes that period's date range into the popup title.
 `mount(host, rows, options)` takes `options.only` to render just one of the two tables -
 Grace Periods' preview uses it to show the schedule alone.
 
-Popup stacking: New Charge / Edit Charge / Edit Terms (z-40, never more than one),
+Popup stacking: New Charge / Edit Charge / Edit Terms / Update End Date (z-40, never more than one),
 Add New Term or a rent adjustment row (z-50),
 Rebuild Schedule (z-60), Confirm Changes (z-70). Escape always closes the topmost one -
 each popup stands down while a higher one is open.

@@ -131,6 +131,112 @@
     return { escalations: escalations, schedule: schedule };
   }
 
+  /* ---------- rows an end date change affects ---------- */
+
+  /* How far past the other end an open-ended charge is looked at. */
+  var HORIZON_MONTHS = 24;
+
+  function daysBetween(from, to) {
+    return Math.round((to - from) / 86400000) + 1;
+  }
+
+  /* What moving a charge's end date does to its rows. Only the stretch between the old end
+     and the new one changes: shortening removes the rows inside it, extending creates
+     them, and the one period the boundary cuts through is modified. Rows are generated
+     from the charge's own terms. `newEnd` is a YYYY/MM/DD date, or '' for no end date. */
+  function endDateChange(charge, newEnd) {
+    var terms = charge.terms;
+    var symbol = terms.scheduleCurrency === 'US Dollars' ? 'US$' : 'COP$';
+    var oldEnd = terms.hasEndDateOverride === 'Yes' && terms.endDateOverride
+      ? parseDate(terms.endDateOverride) : null;
+    var next = newEnd ? parseDate(newEnd) : null;
+
+    var result = { escalations: [], schedule: [], removing: false };
+    if (!oldEnd && !next) return result;
+    if (oldEnd && next && oldEnd.getTime() === next.getTime()) return result;
+
+    /* lo: where the shorter version ends. hi: where the longer one does - which, for an
+       open end, is the horizon past lo. */
+    var removing = oldEnd === null || (next !== null && next < oldEnd);
+    var lo = removing ? next : oldEnd;
+    var hi = removing ? oldEnd : next;
+    if (!hi) hi = addMonths(lo, HORIZON_MONTHS);
+    result.removing = removing;
+
+    function stateFor(from, to) {
+      if (from > hi || to <= lo) return null;    /* outside the stretch: untouched */
+      return from > lo ? (removing ? 'Remove' : 'New') : 'Modified';
+    }
+
+    /* A modified period is cut at the shorter end when removing; everything else runs to
+       the longer end at most. */
+    function shownEnd(to, state) {
+      var limit = removing && state === 'Modified' ? lo : hi;
+      return to > limit ? limit : to;
+    }
+
+    var escalations = result.escalations;
+    var schedule = result.schedule;
+
+    var periods = (charge.termPeriods || []).slice().sort(function (a, b) {
+      return a.termsStartDate < b.termsStartDate ? -1 : a.termsStartDate > b.termsStartDate ? 1 : 0;
+    });
+
+    periods.forEach(function (p, i) {
+      var termStart = parseDate(p.termsStartDate);
+      var following = periods[i + 1];
+      var termEnd = following ? dayBefore(parseDate(following.termsStartDate)) : hi;
+      if (termStart > hi) return;
+      if (termEnd > hi) termEnd = hi;
+
+      var monthly = parseFloat(p.initialAmount) || 0;
+
+      /* Billing periods, each stepped from the term start so month ends never drift. */
+      var billing = FREQUENCY_MONTHS[p.billingFrequency] || 1;
+      for (var k = 0; k < 1200; k++) {
+        var from = addMonths(termStart, k * billing);
+        if (from > termEnd) break;
+        var to = dayBefore(addMonths(termStart, (k + 1) * billing));
+        if (to > termEnd) to = termEnd;
+
+        var state = stateFor(from, to);
+        if (!state) continue;
+        var end = shownEnd(to, state);
+        /* A period cut short bills only the days it keeps. */
+        var total = monthly * billing * daysBetween(from, end) / daysBetween(from, to);
+        schedule.push({
+          billOnDate: format(from),
+          periodFrom: format(from),
+          periodTo: format(end),
+          Total: money(symbol, total),
+          state: state,
+        });
+      }
+
+      var escalationMonths = Number(p.escalationFrequency) || 12;
+      for (var c = 0; c < 1200; c++) {
+        var eFrom = addMonths(termStart, c * escalationMonths);
+        if (eFrom > termEnd) break;
+        var eTo = dayBefore(addMonths(termStart, (c + 1) * escalationMonths));
+        if (eTo > termEnd) eTo = termEnd;
+
+        var eState = stateFor(eFrom, eTo);
+        if (!eState) continue;
+        escalations.push({
+          dateFrom: format(eFrom),
+          dateTo: format(shownEnd(eTo, eState)),
+          billingFrequency: p.billingFrequency,
+          chargeAmount: money(symbol, monthly),
+          escalationType: p.escalationType,
+          escalationAmount: escalationAmountFor(p, c),
+          state: eState,
+        });
+      }
+    });
+
+    return result;
+  }
+
   /* ---------- fixed placeholder rows ---------- */
 
   var SAMPLE = {
@@ -505,5 +611,6 @@
     asPercent: asPercent,
     SAMPLE: SAMPLE,
     sampleWithGrace: sampleWithGrace,
+    endDateChange: endDateChange,
   };
 })();

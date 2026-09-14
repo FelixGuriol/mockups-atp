@@ -4,7 +4,7 @@
 
 (function () {
   /* Charge level fields, filled once. */
-  var TERM_FIELDS = ['chargeType', 'startsOn', 'startDate', 'endDateOverride', 'cycleDate',
+  var TERM_FIELDS = ['chargeType', 'startsOn', 'startDate', 'cycleDate',
     'scheduleCurrency', 'billingCurrency', 'initialCharge'];
 
   var lastFocus = null;
