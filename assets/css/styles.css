@@ -227,6 +227,17 @@ select:focus-visible {
   color: #262626;
 }
 .modal-td { border-top: 1px solid #d4d4d4; }
+
+/* The Actions column: only as wide as its buttons, and pinned to the table's right edge,
+   so it stays in reach while a wide table scrolls sideways beneath it. */
+.modal-sticky-end {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  width: 1%;
+  background: #fff;
+  box-shadow: inset 1px 0 0 #d4d4d4;
+}
 .modal-th:last-child,
 .modal-td:last-child { border-right: 0; }
 

@@ -33,7 +33,8 @@ Then browse to http://localhost:8000
     assets/js/pages.js      Placeholder content + section renderers for 12 tabs
     assets/js/charges.js    Charge Schedule data, cards, table, view toggle, gear menu
     assets/js/new-charge-modal.js New Charge popup, opened by the Add button
-    assets/js/charge-modal.js  Edit Charge popup: charge level fields + grace periods
+    assets/js/charge-modal.js  Edit Charge popup: charge level fields + rent adjustments
+    assets/js/adjustment-modal.js Create / edit popup for a rent adjustment row
     assets/js/terms-modal.js   Edit Terms popup: one dropdown per term period
     assets/js/add-term-modal.js Add New Term popup, opened from inside Edit Terms
     assets/js/rebuild-modal.js Rebuild Schedule preview popup
@@ -42,7 +43,8 @@ Then browse to http://localhost:8000
     assets/js/partials.js   Fetches partials/*.html once, clones per open
 
     partials/new-charge.html   New Charge popup markup (charge + first term)
-    partials/edit-charge.html  Edit Charge popup markup (Charge + Grace Periods tabs)
+    partials/edit-charge.html  Edit Charge popup markup (Charge + Rent Adjustments tabs)
+    partials/adjustment-row.html  Rent adjustment row popup markup
     partials/edit-terms.html   Edit Terms popup markup (the term period dropdowns)
     partials/add-term.html     Add New Term popup markup
     partials/rebuild-schedule.html  Rebuild Schedule popup shell
@@ -100,8 +102,30 @@ charge as a whole, in two sub-tabs:
 
 - **Charge** - charge type, initial charge, Starts On / Start Date and End Date Override,
   plus Save / Cancel.
-- **Grace Periods** - a table of FromDate / EndDate rows with per-row delete and edit
-  buttons, an "Add New Grace Period" button, and its own Save / Cancel.
+- **Rent Adjustments** - three tables, in this order: Rent Abatements (FromDate / EndDate /
+  Abatement Amount / Abatement Percentage / Reason / Comments), Rent Reductions (the same,
+  as Reduction Amount / Reduction Percentage), and Grace Periods last (FromDate /
+  EndDate / Reason / Comments), and a Cancel for the tab - there is no tab-wide Save,
+  since every row is saved on its own. In every table the
+  Actions column is only as wide as its buttons and pinned to the right edge
+  (`.modal-sticky-end`), so it stays in reach while a wide table scrolls sideways.
+
+  An abatement or reduction is either an amount or a percentage, never both. In the popup,
+  typing into one locks the other; clearing it frees the other again, and Save refuses a
+  row that somehow holds both.
+
+  Rows are created and edited in a popup (`partials/adjustment-row.html`, driven by
+  `adjustment-modal.js`, z-50 above Edit Charge); delete removes a row straight away.
+  The popup's Save does not write the row directly: it opens the schedule preview (z-60)
+  for that row's date range, then the Change Reason confirmation (z-70), and only once that
+  is confirmed does the row land and the popup close. Cancelling either step leaves the
+  row untouched with the popup still open. A grace period previews the schedule only;
+  abatements and reductions preview both tables.
+  Each table is a `[data-crud]` block holding its own row template, and the template's
+  `[data-cell]` names are the fields the popup shows - so one popup serves all three
+  tables. A template cell's `data-label` renames that field in the popup, which is how
+  the same Amount field reads "Abatement Amount" or "Reduction Amount". Both dates are required and the end date cannot precede the from date. A cell's
+  `data-suffix` (the `%` on Percentage) is display only; the popup edits the bare number.
 
 **Edit Terms** (`partials/edit-terms.html`) holds the term periods only: "Add New Term",
 one collapsible dropdown per period, and Cancel. It has no sub-tabs: each period is
@@ -186,13 +210,13 @@ term period and passes that period's date range into the popup title.
 Grace Periods' preview uses it to show the schedule alone.
 
 Popup stacking: New Charge / Edit Charge / Edit Terms (z-40, never more than one),
-Add New Term (z-50),
+Add New Term or a rent adjustment row (z-50),
 Rebuild Schedule (z-60), Confirm Changes (z-70). Escape always closes the topmost one -
 each popup stands down while a higher one is open.
 
 Save on Edit Charge goes through two steps: a preview popup titled "Save Charge" and
 then the Change Reason confirmation. Confirming closes the preview and the popup
-underneath it. Grace Periods' own Save works the same way.
+underneath it. A rent adjustment row's Save works the same way.
 
 Current conditional rules: Start Date shows when Starts On is "Other", Escalation
 Amount shows for Fixed or Percentage, and Escalation Anniversary shows when Escalates

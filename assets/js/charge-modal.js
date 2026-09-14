@@ -57,65 +57,87 @@
     });
   }
 
-  /* Grace period rows edit in place: the two date cells swap between text and inputs,
-     and the row's own edit button doubles as its save button. */
-  function graceValue(cell) {
-    var input = cell.querySelector('input');
-    return input ? input.value.trim() : cell.textContent.trim();
-  }
-
-  function setGraceEditing(row, editing) {
-    each(row.querySelectorAll('[data-grace-cell]'), function (cell) {
-      var value = graceValue(cell);
-      if (editing) {
-        cell.dataset.original = value;   /* kept so cancel can put it back */
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'f-input';
-        input.placeholder = 'YYYY/MM/DD';
-        input.value = value;
-        cell.innerHTML = '';
-        cell.appendChild(input);
-      } else {
-        cell.textContent = value;
-      }
+  /* The Rent Adjustments tab's tables create and edit their rows in a popup
+     (adjustment-modal.js). A table's row template names its columns through [data-cell],
+     so the popup asks for exactly those fields, whichever table it is. */
+  function columnsOf(block) {
+    var tpl = block.querySelector('[data-row]');
+    var names = [];
+    each(tpl.content.querySelectorAll('[data-cell]'), function (cell) {
+      names.push(cell.dataset.cell);
     });
-
-    /* While a row is being edited its two buttons become save and cancel. */
-    var edit = row.querySelector('[data-grace-edit]');
-    if (edit) edit.textContent = editing ? 'save' : 'edit';
-
-    var remove = row.querySelector('[data-grace-delete]');
-    if (remove) remove.textContent = editing ? 'cancel' : 'delete';
-
-    row.dataset.editing = editing ? 'true' : 'false';
+    return names;
   }
 
-  /* Cancel restores what the row held before editing. A row that was never saved -
-     one just added - has nothing to go back to, so it goes away. */
-  function cancelGraceEditing(row) {
-    if (row.dataset.isNew === 'true') {
-      row.parentNode.removeChild(row);
-      return;
+  /* Labels a table gives its own columns ("Abatement Amount"), for the popup to show. */
+  function labelsOf(block) {
+    var labels = {};
+    each(block.querySelector('[data-row]').content.querySelectorAll('[data-label]'), function (cell) {
+      labels[cell.dataset.cell] = cell.dataset.label;
+    });
+    return labels;
+  }
+
+  /* A suffix such as "%" is display only, so the popup gets the bare value. */
+  function readRow(row) {
+    var values = {};
+    each(row.querySelectorAll('[data-cell]'), function (cell) {
+      var text = cell.textContent.trim();
+      var suffix = cell.dataset.suffix || '';
+      values[cell.dataset.cell] = suffix && text.slice(-suffix.length) === suffix
+        ? text.slice(0, -suffix.length) : text;
+    });
+    return values;
+  }
+
+  function writeRow(row, values) {
+    each(row.querySelectorAll('[data-cell]'), function (cell) {
+      var value = values[cell.dataset.cell];
+      cell.textContent = value ? value + (cell.dataset.suffix || '') : '';
+    });
+  }
+
+  /* What saving a row previews. A grace period suspends billing, so it shows the schedule
+     it rewrites; abatements and reductions show both the escalations and the schedule. */
+  function previewFor(block, title) {
+    var noun = block.dataset.crudNoun.toLowerCase();
+    var preview = {
+      title: title,
+      message: 'Save this ' + noun + '? The rows shown here will be updated.',
+    };
+    if (block.dataset.crud === 'grace') {
+      preview.only = 'schedule';
+      preview.rows = window.SCHEDULE_PREVIEW.sampleWithGrace();
     }
-
-    each(row.querySelectorAll('[data-grace-cell]'), function (cell) {
-      cell.textContent = cell.dataset.original || '';
-    });
-    setGraceEditing(row, false);
+    return preview;
   }
 
-  function addGraceRow(scope) {
-    var tpl = scope.querySelector('[data-row="grace"]');
-    var body = scope.querySelector('[data-rows="grace"]');
-    if (!tpl || !body) return;
+  function editRow(row) {
+    var block = row.closest('[data-crud]');
+    var title = 'Edit ' + block.dataset.crudNoun;
+    window.ADJUSTMENT_MODAL.open({
+      title: title,
+      fields: columnsOf(block),
+      labels: labelsOf(block),
+      values: readRow(row),
+      preview: previewFor(block, title),
+      onSave: function (values) { writeRow(row, values); },
+    });
+  }
 
-    body.appendChild(tpl.content.cloneNode(true));
-    var row = body.lastElementChild;
-    row.dataset.isNew = 'true';
-    setGraceEditing(row, true);
-    var first = row.querySelector('input');
-    if (first) first.focus();
+  function addRow(block) {
+    var title = 'Add New ' + block.dataset.crudNoun;
+    window.ADJUSTMENT_MODAL.open({
+      title: title,
+      fields: columnsOf(block),
+      labels: labelsOf(block),
+      preview: previewFor(block, title),
+      onSave: function (values) {
+        var body = block.querySelector('[data-rows]');
+        body.appendChild(block.querySelector('[data-row]').content.cloneNode(true));
+        writeRow(body.lastElementChild, values);
+      },
+    });
   }
 
   function showPanel(id) {
@@ -156,23 +178,17 @@
     el.onclick = function (e) {
       if (e.target === el || e.target.closest('[data-modal-close]')) return close();
 
-      var graceEdit = e.target.closest('[data-grace-edit]');
-      if (graceEdit) {
-        var editRow = graceEdit.closest('tr');
-        var saving = editRow.dataset.editing === 'true';
-        if (saving) editRow.dataset.isNew = 'false';
-        return setGraceEditing(editRow, !saving);
-      }
+      var rowEdit = e.target.closest('[data-crud-edit]');
+      if (rowEdit) return editRow(rowEdit.closest('tr'));
 
-      /* Same button: cancel while editing, delete otherwise. */
-      var graceDelete = e.target.closest('[data-grace-delete]');
-      if (graceDelete) {
-        var row = graceDelete.closest('tr');
-        if (row.dataset.editing === 'true') return cancelGraceEditing(row);
+      var rowDelete = e.target.closest('[data-crud-delete]');
+      if (rowDelete) {
+        var row = rowDelete.closest('tr');
         return row.parentNode.removeChild(row);
       }
 
-      if (e.target.closest('[data-grace-add]')) return addGraceRow(el);
+      var rowAdd = e.target.closest('[data-crud-add]');
+      if (rowAdd) return addRow(rowAdd.closest('[data-crud]'));
 
       /* Saving the charge previews everything it would create, then confirms. */
       if (e.target.closest('[data-charge-save]')) {
@@ -180,14 +196,6 @@
           title: 'Save Charge',
           message: 'Save this charge? The escalations and billing rows shown here will be created.',
           onSaved: close,
-        });
-      }
-
-      /* Saving grace periods rebuilds the schedule, so it previews the result. */
-      if (e.target.closest('[data-grace-save]')) {
-        return window.REBUILD_MODAL.open('', {
-          only: 'schedule',
-          rows: window.SCHEDULE_PREVIEW.sampleWithGrace(),
         });
       }
 
@@ -226,6 +234,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape' || !isOpen()) return;
     /* Popups above this one close themselves. */
+    if (window.ADJUSTMENT_MODAL && window.ADJUSTMENT_MODAL.isOpen()) return;
     if (window.REBUILD_MODAL && window.REBUILD_MODAL.isOpen()) return;
     if (window.CONFIRM_MODAL && window.CONFIRM_MODAL.isOpen()) return;
     close();

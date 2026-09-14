@@ -1,0 +1,82 @@
+<!-- Rent Adjustment row dialog. Loaded by assets/js/partials.js, driven by
+     assets/js/adjustment-modal.js. Opens over Edit Charge to create or edit one row of the
+     Rent Adjustments tables. It holds every field any of those tables uses; each
+     [data-adjust-field] block is shown only when the table being edited has that column. -->
+<div class="modal-panel bg-white w-full max-w-2xl border border-neutral-300 shadow-2xl my-4 sm:my-8"
+  role="document">
+
+  <div class="flex flex-wrap items-center gap-3 px-4 sm:px-6 pt-5 pb-4 border-b border-neutral-200">
+    <h2 id="adjustment-modal-title" class="mr-auto text-xl sm:text-2xl font-normal text-neutral-800"
+      data-cell="title"></h2>
+
+    <button type="button" data-adjust-close title="Close" aria-label="Close"
+      class="shrink-0 h-9 w-9 flex items-center justify-center border border-neutral-400
+             bg-neutral-700 hover:bg-neutral-900 text-white rounded-sm shadow-sm transition-colors">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    </button>
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+
+    <p data-adjust-error hidden
+      class="mb-4 border border-red-300 bg-red-50 text-red-800 text-sm px-3 py-2"></p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+      <div data-adjust-field="fromDate">
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> From Date</label>
+        <div class="f-date">
+          <input type="text" class="f-input" data-field="fromDate" placeholder="YYYY/MM/DD" />
+          <button type="button" class="f-cal" title="Choose date" aria-label="Choose from date">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div data-adjust-field="endDate">
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> End Date</label>
+        <div class="f-date">
+          <input type="text" class="f-input" data-field="endDate" placeholder="YYYY/MM/DD" />
+          <button type="button" class="f-cal" title="Choose date" aria-label="Choose end date">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div data-adjust-field="amount">
+        <label class="f-label" data-label-text>Amount</label>
+        <input type="number" step="0.01" class="f-input" data-field="amount" placeholder="0.00" />
+      </div>
+      <div data-adjust-field="percentage">
+        <label class="f-label" data-label-text>Percentage</label>
+        <input type="number" step="0.01" class="f-input" data-field="percentage" placeholder="0.00" />
+      </div>
+      <div class="md:col-span-2" data-adjust-field="reason">
+        <label class="f-label">Reason</label>
+        <select class="f-select" data-field="reason">
+          <option value="">-- select Reason Code --</option>
+          <option>AT&amp;T Rent Reduction Program</option>
+          <option>Reduced to prevent churn</option>
+          <option>Reduction exchanged for new business</option>
+          <option>Reduction for a new tenant on the site</option>
+          <option>Reduction for adjustment to Market rate</option>
+          <option>Volume Rent incentive reduction</option>
+        </select>
+      </div>
+      <div class="md:col-span-2" data-adjust-field="comments">
+        <label class="f-label">Comments</label>
+        <textarea rows="3" class="f-input" data-field="comments"></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="btn" data-adjust-save>Save</button>
+    <button type="button" class="btn btn-cancel" data-adjust-close>Cancel</button>
+  </div>
+</div>

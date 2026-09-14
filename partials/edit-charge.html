@@ -13,7 +13,7 @@
 
     <div class="seg order-3 sm:order-2 max-w-full overflow-x-auto" role="group" aria-label="Charge sections">
       <button type="button" data-subtab="charge" aria-pressed="true">Charge</button>
-      <button type="button" data-subtab="grace" aria-pressed="false">Grace Periods</button>
+      <button type="button" data-subtab="adjustments" aria-pressed="false">Rent Adjustments</button>
     </div>
 
     <button type="button" data-modal-close title="Close" aria-label="Close"
@@ -122,60 +122,187 @@
     </div>
   </section>
 
-  <!-- ======================== Grace Periods ======================== -->
-  <section data-panel="grace" class="p-4 sm:p-6" hidden>
-    <div class="scroll-x border border-neutral-300">
+  <!-- ======================= Rent Adjustments ======================= -->
+  <!-- Three tables whose rows are created and edited in a popup (adjustment-row.html).
+       Each [data-crud] block holds its own table and row template; the template's
+       [data-cell] names are the fields that popup asks for. -->
+  <section data-panel="adjustments" class="p-4 sm:p-6" hidden>
+    <div data-crud="abatements" data-crud-noun="Rent Abatement">
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <h3 class="mr-auto text-sm font-bold text-neutral-800">Rent Abatements</h3>
+        <button type="button" class="btn" data-crud-add>
+          <svg class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          Add
+        </button>
+      </div>
+      <div class="scroll-x border border-neutral-300">
+      <table class="min-w-full text-sm">
+        <caption class="sr-only">Rent abatements</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="modal-th">FromDate</th>
+            <th scope="col" class="modal-th">EndDate</th>
+            <th scope="col" class="modal-th">Abatement Amount</th>
+            <th scope="col" class="modal-th">Abatement Percentage</th>
+            <th scope="col" class="modal-th">Reason</th>
+            <th scope="col" class="modal-th">Comments</th>
+            <th scope="col" class="modal-th modal-sticky-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody data-rows="abatements">
+          <tr>
+            <td class="modal-td" data-cell="fromDate">2025/03/01</td>
+            <td class="modal-td" data-cell="endDate">2025/05/31</td>
+            <td class="modal-td rb-num" data-cell="amount">150.00</td>
+            <td class="modal-td rb-num" data-cell="percentage" data-suffix="%"></td>
+            <td class="modal-td" data-cell="reason">Volume Rent incentive reduction</td>
+            <td class="modal-td" data-cell="comments">Site access restricted during repairs</td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <!-- Cloned by charge-modal.js for each row created in the popup -->
+      <template data-row="abatements">
+          <tr>
+            <td class="modal-td" data-cell="fromDate"></td>
+            <td class="modal-td" data-cell="endDate"></td>
+            <td class="modal-td rb-num" data-cell="amount" data-label="Abatement Amount"></td>
+            <td class="modal-td rb-num" data-cell="percentage" data-suffix="%" data-label="Abatement Percentage"></td>
+            <td class="modal-td" data-cell="reason"></td>
+            <td class="modal-td" data-cell="comments"></td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
+            </td>
+          </tr>
+      </template>
+    </div>
+
+    <div data-crud="reductions" data-crud-noun="Rent Reduction" class="mt-8">
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <h3 class="mr-auto text-sm font-bold text-neutral-800">Rent Reductions</h3>
+        <button type="button" class="btn" data-crud-add>
+          <svg class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          Add
+        </button>
+      </div>
+      <div class="scroll-x border border-neutral-300">
+      <table class="min-w-full text-sm">
+        <caption class="sr-only">Rent reductions</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="modal-th">FromDate</th>
+            <th scope="col" class="modal-th">EndDate</th>
+            <th scope="col" class="modal-th">Reduction Amount</th>
+            <th scope="col" class="modal-th">Reduction Percentage</th>
+            <th scope="col" class="modal-th">Reason</th>
+            <th scope="col" class="modal-th">Comments</th>
+            <th scope="col" class="modal-th modal-sticky-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody data-rows="reductions">
+          <tr>
+            <td class="modal-td" data-cell="fromDate">2029/01/01</td>
+            <td class="modal-td" data-cell="endDate">2029/12/31</td>
+            <td class="modal-td rb-num" data-cell="amount"></td>
+            <td class="modal-td rb-num" data-cell="percentage" data-suffix="%">7.50%</td>
+            <td class="modal-td" data-cell="reason">Reduction for adjustment to Market rate</td>
+            <td class="modal-td" data-cell="comments">Agreed with the landlord for 2029</td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <!-- Cloned by charge-modal.js for each row created in the popup -->
+      <template data-row="reductions">
+          <tr>
+            <td class="modal-td" data-cell="fromDate"></td>
+            <td class="modal-td" data-cell="endDate"></td>
+            <td class="modal-td rb-num" data-cell="amount" data-label="Reduction Amount"></td>
+            <td class="modal-td rb-num" data-cell="percentage" data-suffix="%" data-label="Reduction Percentage"></td>
+            <td class="modal-td" data-cell="reason"></td>
+            <td class="modal-td" data-cell="comments"></td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
+            </td>
+          </tr>
+      </template>
+    </div>
+
+    <div data-crud="grace" data-crud-noun="Grace Period" class="mt-8">
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <h3 class="mr-auto text-sm font-bold text-neutral-800">Grace Periods</h3>
+        <button type="button" class="btn" data-crud-add>
+          <svg class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          Add
+        </button>
+      </div>
+      <div class="scroll-x border border-neutral-300">
       <table class="min-w-full text-sm">
         <caption class="sr-only">Grace periods</caption>
         <thead>
           <tr>
             <th scope="col" class="modal-th">FromDate</th>
             <th scope="col" class="modal-th">EndDate</th>
-            <th scope="col" class="modal-th">Actions</th>
+            <th scope="col" class="modal-th">Reason</th>
+            <th scope="col" class="modal-th">Comments</th>
+            <th scope="col" class="modal-th modal-sticky-end">Actions</th>
           </tr>
         </thead>
         <tbody data-rows="grace">
           <tr>
-            <td class="modal-td" data-grace-cell>2022/02/26</td>
-            <td class="modal-td" data-grace-cell>2022/04/25</td>
-            <td class="modal-td">
-              <button type="button" class="btn-xs" data-grace-delete>delete</button>
-              <button type="button" class="btn-xs ml-1" data-grace-edit>edit</button>
+            <td class="modal-td" data-cell="fromDate">2022/02/26</td>
+            <td class="modal-td" data-cell="endDate">2022/04/25</td>
+            <td class="modal-td" data-cell="reason">Reduction for a new tenant on the site</td>
+            <td class="modal-td" data-cell="comments">Rent free while the equipment is installed</td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
             </td>
           </tr>
           <tr>
-            <td class="modal-td" data-grace-cell>2024/01/01</td>
-            <td class="modal-td" data-grace-cell>2024/01/31</td>
-            <td class="modal-td">
-              <button type="button" class="btn-xs" data-grace-delete>delete</button>
-              <button type="button" class="btn-xs ml-1" data-grace-edit>edit</button>
+            <td class="modal-td" data-cell="fromDate">2024/01/01</td>
+            <td class="modal-td" data-cell="endDate">2024/01/31</td>
+            <td class="modal-td" data-cell="reason">Volume Rent incentive reduction</td>
+            <td class="modal-td" data-cell="comments">Agreed pause during the site upgrade</td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
             </td>
           </tr>
         </tbody>
-        <tfoot>
+      </table>
+      </div>
+
+      <!-- Cloned by charge-modal.js for each row created in the popup -->
+      <template data-row="grace">
           <tr>
-            <td class="modal-td" colspan="3">
-              <button type="button" class="btn-xs" data-grace-add>+ Add New Grace Period</button>
+            <td class="modal-td" data-cell="fromDate"></td>
+            <td class="modal-td" data-cell="endDate"></td>
+            <td class="modal-td" data-cell="reason"></td>
+            <td class="modal-td" data-cell="comments"></td>
+            <td class="modal-td modal-sticky-end">
+              <button type="button" class="btn-xs" data-crud-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-crud-edit>edit</button>
             </td>
           </tr>
-        </tfoot>
-      </table>
+      </template>
     </div>
 
-    <!-- Cloned by charge-modal.js for each new grace period -->
-    <template data-row="grace">
-          <tr>
-            <td class="modal-td" data-grace-cell></td>
-            <td class="modal-td" data-grace-cell></td>
-            <td class="modal-td">
-              <button type="button" class="btn-xs" data-grace-delete>delete</button>
-              <button type="button" class="btn-xs ml-1" data-grace-edit>edit</button>
-            </td>
-          </tr>
-    </template>
-
     <div class="modal-footer">
-      <button type="button" class="btn" data-grace-save>Save</button>
       <button type="button" class="btn btn-cancel" data-modal-close>Cancel</button>
     </div>
   </section>
