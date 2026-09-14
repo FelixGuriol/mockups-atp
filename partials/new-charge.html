@@ -1,0 +1,168 @@
+<!-- New Charge dialog. Loaded by assets/js/partials.js, driven by assets/js/new-charge-modal.js.
+     Two groups of fields: the charge itself, and the first term it starts with. The hooks
+     match edit-charge.html and edit-terms.html, so the values map straight onto a charge. -->
+<div class="modal-panel bg-white w-full max-w-4xl border border-neutral-300 shadow-2xl my-4 sm:my-8"
+  role="document">
+
+  <div class="flex flex-wrap items-center gap-3 px-4 sm:px-6 pt-5 pb-4 border-b border-neutral-200">
+    <h2 id="new-charge-modal-title" class="mr-auto text-xl sm:text-2xl font-normal text-neutral-800">
+      New Charge
+    </h2>
+
+    <button type="button" data-new-close title="Close" aria-label="Close"
+      class="shrink-0 h-9 w-9 flex items-center justify-center border border-neutral-400
+             bg-neutral-700 hover:bg-neutral-900 text-white rounded-sm shadow-sm transition-colors">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    </button>
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+
+    <p data-new-error hidden
+      class="mb-4 border border-red-300 bg-red-50 text-red-800 text-sm px-3 py-2">
+      Enter the date this charge starts on.
+    </p>
+
+    <!-- ============================ Charge ============================ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Charge Type</label>
+        <select class="f-select" data-field="chargeType">
+          <option>Renta Torre 100.00%</option>
+          <option>Blended Rate 100.00%</option>
+          <option>Ground Pass-Thru</option>
+        </select>
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Initial Charge</label>
+        <div class="flex gap-2">
+          <select class="f-select sm:max-w-[12rem]" data-field="currency">
+            <option>US Dollars</option>
+            <option>Colombian Pesos</option>
+          </select>
+          <input type="text" class="f-input" data-field="initialCharge" placeholder="0.00" />
+        </div>
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Starts On</label>
+        <div class="flex gap-2">
+          <select class="f-select sm:max-w-[12rem]" data-field="startsOn">
+            <option>Other</option>
+            <option selected>Commencement</option>
+            <option>Lease Signing</option>
+            <option>Notice To Proceed</option>
+          </select>
+          <div data-when-field="startsOn" data-when-value="Other" class="f-date">
+            <input type="text" class="f-input" data-field="startDate" placeholder="YYYY/MM/DD" />
+            <button type="button" class="f-cal" title="Choose date" aria-label="Choose start date">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="f-label">End Date Override</label>
+        <div class="flex gap-2">
+          <div class="seg shrink-0" role="group" aria-label="Has end date override"
+            data-toggle-field="hasEndDateOverride">
+            <button type="button" data-yesno="No" aria-pressed="true">No</button>
+            <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+          </div>
+          <div data-when-field="hasEndDateOverride" data-when-value="Yes" class="f-date">
+            <input type="text" class="f-input" data-field="endDateOverride" placeholder="YYYY/MM/DD" />
+            <button type="button" class="f-cal" title="Choose date" aria-label="Choose end date override">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="f-label">Tenant Lease Start Billing Cycle</label>
+        <div class="flex gap-2">
+          <div class="seg shrink-0" role="group" aria-label="Has tenant lease start billing cycle" data-toggle-field="hasCycleDate">
+            <button type="button" data-yesno="No" aria-pressed="true">No</button>
+            <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+          </div>
+          <div data-when-field="hasCycleDate" data-when-value="Yes" class="f-date">
+            <input type="text" class="f-input" data-field="cycleDate" placeholder="YYYY/MM/DD" />
+            <button type="button" class="f-cal" title="Choose date" aria-label="Choose tenant lease start billing cycle date">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="f-label">Escalation Anniversary</label>
+        <div class="flex gap-2">
+          <div class="seg shrink-0" role="group" aria-label="Escalates with lease commencement"
+            data-toggle-field="escalatesWithCommencement">
+            <button type="button" data-yesno="No" aria-pressed="true">No</button>
+            <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+          </div>
+          <div data-when-field="escalatesWithCommencement" data-when-value="Yes" class="f-date">
+            <input type="text" class="f-input" data-field="escalationAnniversary" placeholder="YYYY/MM/DD" />
+            <button type="button" class="f-cal" title="Choose date" aria-label="Choose escalation anniversary">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Frequency (months)</label>
+        <input type="text" class="f-input" data-field="escalationFrequency" value="12" />
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Billing Frequency</label>
+        <select class="f-select" data-field="billingFrequency">
+          <option>Monthly</option>
+          <option>Quarterly</option>
+          <option>Semi-Annual</option>
+          <option>Annual</option>
+        </select>
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Type and Amount</label>
+        <div class="flex gap-2">
+          <select class="f-select sm:max-w-[12rem]" data-field="escalationType">
+            <option>CPI</option>
+            <option>Fixed</option>
+            <option>Percentage</option>
+            <option>None</option>
+          </select>
+          <input type="text" class="f-input" data-field="escalationAmount" placeholder="Escalation Amount"
+            data-when-field="escalationType" data-when-value="Fixed|Percentage" />
+        </div>
+      </div>
+      <div>
+        <label class="f-label">CPI Index</label>
+        <div class="flex gap-2">
+          <select class="f-select sm:max-w-[12rem]" data-field="cpiIndex">
+            <option>IPC For USA</option>
+            <option>IPC Colombia</option>
+            <option>CPI-U All Items</option>
+          </select>
+          <input type="text" class="f-input" data-field="cpiAdjustment" placeholder="CPI Percentage Adjustment" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="btn" data-new-save>Save</button>
+    <button type="button" class="btn btn-cancel" data-new-close>Cancel</button>
+  </div>
+</div>

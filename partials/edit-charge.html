@@ -1,0 +1,157 @@
+<!-- Edit Charge dialog. Loaded by assets/js/partials.js, populated by assets/js/charge-modal.js.
+     Holds the charge level fields; the term dropdowns live in edit-terms.html.
+     Hooks: [data-field] form values, [data-panel] sub-tab panels, [data-row] row templates. -->
+<div class="modal-panel bg-white w-full max-w-6xl border border-neutral-300 shadow-2xl my-4 sm:my-8"
+  role="document">
+
+  <!-- Title, then the sub-tabs, then the close button - all on one header row.
+       On narrow screens the tabs wrap to their own line and the close button stays put. -->
+  <div class="flex flex-wrap items-center gap-3 px-4 sm:px-6 pt-5 pb-4 border-b border-neutral-200">
+    <h2 id="charge-modal-title" class="order-1 mr-auto text-xl sm:text-2xl font-normal text-neutral-800">
+      Edit <span data-field="title"></span>
+    </h2>
+
+    <div class="seg order-3 sm:order-2 max-w-full overflow-x-auto" role="group" aria-label="Charge sections">
+      <button type="button" data-subtab="charge" aria-pressed="true">Charge</button>
+      <button type="button" data-subtab="grace" aria-pressed="false">Grace Periods</button>
+    </div>
+
+    <button type="button" data-modal-close title="Close" aria-label="Close"
+      class="order-2 sm:order-3 shrink-0 h-9 w-9 flex items-center justify-center border border-neutral-400
+             bg-neutral-700 hover:bg-neutral-900 text-white rounded-sm shadow-sm transition-colors">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    </button>
+  </div>
+
+  <!-- Only this part scrolls; the header and sub-tabs stay in place. -->
+  <div class="flex-1 min-h-0 overflow-y-auto">
+
+  <!-- ============================ Charge ============================ -->
+  <section data-panel="charge" class="p-4 sm:p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Charge Type</label>
+        <select class="f-select" data-field="chargeType" disabled>
+          <option>Blended Rate 100.00%</option>
+          <option>Renta Torre 100.00%</option>
+          <option>Ground Pass-Thru</option>
+        </select>
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Initial Charge</label>
+        <div class="flex gap-2">
+          <select class="f-select sm:max-w-[12rem]" data-field="currency" disabled>
+            <option>US Dollars</option>
+            <option>Colombian Pesos</option>
+          </select>
+          <input type="text" class="f-input" data-field="initialCharge" placeholder="0.00" readonly />
+        </div>
+      </div>
+      <div>
+        <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Starts On</label>
+        <div class="flex gap-2">
+          <select class="f-select sm:max-w-[12rem]" data-field="startsOn" disabled>
+            <option>Other</option>
+            <option>Commencement</option>
+            <option>Lease Signing</option>
+            <option>Notice To Proceed</option>
+          </select>
+          <div data-when-field="startsOn" data-when-value="Other" class="f-date">
+            <input type="text" class="f-input" data-field="startDate" readonly />
+            <button type="button" class="f-cal" disabled title="Choose date" aria-label="Choose start date">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="f-label">End Date Override</label>
+        <div class="flex gap-2">
+          <div class="seg shrink-0" role="group" aria-label="Has end date override"
+            data-toggle-field="hasEndDateOverride">
+            <button type="button" data-yesno="No" aria-pressed="true">No</button>
+            <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+          </div>
+          <div data-when-field="hasEndDateOverride" data-when-value="Yes" class="f-date">
+            <input type="text" class="f-input" data-field="endDateOverride" placeholder="YYYY/MM/DD" />
+            <button type="button" class="f-cal" title="Choose date" aria-label="Choose end date override">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn" data-charge-save>Save</button>
+      <button type="button" class="btn btn-cancel" data-modal-close>Cancel</button>
+    </div>
+  </section>
+
+  <!-- ======================== Grace Periods ======================== -->
+  <section data-panel="grace" class="p-4 sm:p-6" hidden>
+    <div class="scroll-x border border-neutral-300">
+      <table class="min-w-full text-sm">
+        <caption class="sr-only">Grace periods</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="modal-th">FromDate</th>
+            <th scope="col" class="modal-th">EndDate</th>
+            <th scope="col" class="modal-th">Actions</th>
+          </tr>
+        </thead>
+        <tbody data-rows="grace">
+          <tr>
+            <td class="modal-td" data-grace-cell>2022/02/26</td>
+            <td class="modal-td" data-grace-cell>2022/04/25</td>
+            <td class="modal-td">
+              <button type="button" class="btn-xs" data-grace-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-grace-edit>edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="modal-td" data-grace-cell>2024/01/01</td>
+            <td class="modal-td" data-grace-cell>2024/01/31</td>
+            <td class="modal-td">
+              <button type="button" class="btn-xs" data-grace-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-grace-edit>edit</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="modal-td" colspan="3">
+              <button type="button" class="btn-xs" data-grace-add>+ Add New Grace Period</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Cloned by charge-modal.js for each new grace period -->
+    <template data-row="grace">
+          <tr>
+            <td class="modal-td" data-grace-cell></td>
+            <td class="modal-td" data-grace-cell></td>
+            <td class="modal-td">
+              <button type="button" class="btn-xs" data-grace-delete>delete</button>
+              <button type="button" class="btn-xs ml-1" data-grace-edit>edit</button>
+            </td>
+          </tr>
+    </template>
+
+    <div class="modal-footer">
+      <button type="button" class="btn" data-grace-save>Save</button>
+      <button type="button" class="btn btn-cancel" data-modal-close>Cancel</button>
+    </div>
+  </section>
+
+  </div>
+</div>

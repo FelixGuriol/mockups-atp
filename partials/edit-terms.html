@@ -1,0 +1,156 @@
+<!-- Edit Terms dialog. Loaded by assets/js/partials.js, populated by assets/js/terms-modal.js.
+     Holds the term period dropdowns only; the charge level fields live in edit-charge.html. -->
+<div class="modal-panel bg-white w-full max-w-6xl border border-neutral-300 shadow-2xl my-4 sm:my-8"
+  role="document">
+
+  <div class="flex flex-wrap items-center gap-3 px-4 sm:px-6 pt-5 pb-4 border-b border-neutral-200">
+    <h2 id="terms-modal-title" class="mr-auto text-xl sm:text-2xl font-normal text-neutral-800">
+      Terms - <span data-field="title"></span>
+    </h2>
+
+    <button type="button" data-terms-close title="Close" aria-label="Close"
+      class="shrink-0 h-9 w-9 flex items-center justify-center border border-neutral-400
+             bg-neutral-700 hover:bg-neutral-900 text-white rounded-sm shadow-sm transition-colors">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    </button>
+  </div>
+
+  <!-- Only the periods scroll; the header and the button row stay in place. -->
+  <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+
+    <div class="flex flex-wrap gap-2 mb-4">
+      <button type="button" class="btn ml-auto" data-add-term>
+        <svg class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+        Add New Term
+      </button>
+    </div>
+
+    <!-- One collapsible group per term period. Cloned from the template below,
+         so every period shares this markup and its own [data-scope] island. -->
+    <div data-rows="terms"></div>
+
+    <template data-row="terms">
+      <details class="acc" data-scope>
+        <summary>
+          <span class="flex flex-wrap items-baseline gap-x-2">
+            <span data-cell="label"></span>
+            <span class="acc-range" data-cell="range"></span>
+          </span><svg class="acc-chevron h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+        </summary>
+        <div class="acc-body">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+          <div>
+            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Start Date</label>
+            <div class="f-date">
+              <input type="text" class="f-input" data-field="termsStartDate" />
+              <button type="button" class="f-cal" title="Choose date" aria-label="Choose terms start date">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="f-label">Tenant Lease Start Billing Cycle</label>
+            <div class="flex gap-2">
+              <div class="seg shrink-0" role="group" aria-label="Has tenant lease start billing cycle"
+                data-toggle-field="hasCycleDate">
+                <button type="button" data-yesno="No" aria-pressed="true">No</button>
+                <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+              </div>
+              <div data-when-field="hasCycleDate" data-when-value="Yes" class="f-date">
+                <input type="text" class="f-input" data-field="cycleDate" placeholder="YYYY/MM/DD" />
+                <button type="button" class="f-cal" title="Choose date" aria-label="Choose tenant lease start billing cycle date">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="f-label">Initial Amount</label>
+            <div class="flex gap-2">
+              <div class="seg shrink-0" role="group" aria-label="Has initial amount"
+                data-toggle-field="hasInitialAmount">
+                <button type="button" data-yesno="No" aria-pressed="true">No</button>
+                <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+              </div>
+              <input type="number" step="0.01" class="f-input" data-field="initialAmount" placeholder="0.00"
+                data-when-field="hasInitialAmount" data-when-value="Yes" />
+            </div>
+          </div>
+          <div>
+            <label class="f-label">Escalation Anniversary</label>
+            <div class="flex gap-2">
+              <div class="seg shrink-0" role="group" aria-label="Escalates with lease commencement"
+                data-toggle-field="escalatesWithCommencement">
+                <button type="button" data-yesno="No" aria-pressed="true">No</button>
+                <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+              </div>
+              <div data-when-field="escalatesWithCommencement" data-when-value="Yes" class="f-date">
+                <input type="text" class="f-input" data-field="escalationAnniversary" />
+                <button type="button" class="f-cal" title="Choose date" aria-label="Choose escalation anniversary">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="17" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Frequency (months)</label>
+            <input type="text" class="f-input" data-field="escalationFrequency" />
+          </div>
+          <div>
+            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Billing Frequency</label>
+            <select class="f-select" data-field="billingFrequency">
+              <option>Monthly</option>
+              <option>Quarterly</option>
+              <option>Semi-Annual</option>
+              <option>Annual</option>
+            </select>
+          </div>
+          <div>
+            <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Type and Amount</label>
+            <div class="flex gap-2">
+              <select class="f-select sm:max-w-[12rem]" data-field="escalationType">
+                <option>CPI</option>
+                <option>Fixed</option>
+                <option>Percentage</option>
+                <option>None</option>
+              </select>
+              <input type="text" class="f-input" data-field="escalationAmount" placeholder="Escalation Amount"
+                data-when-field="escalationType" data-when-value="Fixed|Percentage" />
+            </div>
+          </div>
+          <div>
+            <label class="f-label">CPI Index</label>
+            <div class="flex gap-2">
+              <select class="f-select sm:max-w-[12rem]" data-field="cpiIndex">
+                <option>IPC For USA</option>
+                <option>IPC Colombia</option>
+                <option>CPI-U All Items</option>
+              </select>
+              <input type="text" class="f-input" data-field="cpiAdjustment" placeholder="CPI Percentage Adjustment" />
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-5">
+          <button type="button" class="btn ml-auto" data-rebuild>Rebuild Schedule</button>
+        </div>
+      </div>
+      </details>
+    </template>
+
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="btn btn-cancel" data-terms-close>Cancel</button>
+  </div>
+</div>

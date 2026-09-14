@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Charge Schedule &middot; Tenant Lease Edit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="bg-white text-neutral-900 min-h-screen flex flex-col">
+  <div id="app-header"></div>
+
+  <main class="flex-1 px-3 sm:px-6 py-4">
+    <!-- Toolbar -->
+    <div class="flex flex-wrap items-center justify-end gap-2 mb-3">
+      <div class="inline-flex border border-neutral-400 rounded-sm overflow-hidden shadow-sm" role="group" aria-label="View mode">
+        <button id="btn-view-cards" type="button" title="Card view" aria-pressed="true"
+          data-base="p-1.5 transition-colors hover:bg-neutral-200">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </button>
+        <button id="btn-view-table" type="button" title="Table view" aria-pressed="false"
+          data-base="p-1.5 border-l border-neutral-400 transition-colors hover:bg-neutral-200">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M3 15h18M9 4v16"/>
+          </svg>
+        </button>
+      </div>
+      <button id="btn-add-charge" type="button"
+        class="inline-flex items-center gap-1 border border-neutral-400 bg-neutral-50 hover:bg-neutral-200 text-sm font-medium px-3 py-1.5 rounded-sm shadow-sm transition-colors">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Add
+      </button>
+    </div>
+
+    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-4">
+      <p class="text-sm">
+        <a href="#" class="text-sky-700 hover:underline">Click here to manage charges and fees under the WOM portfolio</a>
+        <span class="font-semibold">(link works in IE only)</span>
+      </p>
+      <p id="charge-count" class="text-sm text-neutral-800 shrink-0"></p>
+    </div>
+
+    <!-- Card view -->
+    <div id="view-cards">
+      <div id="charge-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"></div>
+    </div>
+
+    <!-- Table view -->
+    <div id="view-table" class="hidden border border-neutral-300 scroll-x">
+      <table class="min-w-full text-sm">
+        <caption class="sr-only">Tenant charges for lease 2166</caption>
+        <thead class="bg-neutral-100 text-neutral-800">
+          <tr>
+            <th scope="col" class="px-3 py-2 text-left font-semibold border-b border-neutral-300">Charge Type</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold border-b border-neutral-300">Description</th>
+            <th scope="col" class="px-3 py-2 text-right font-semibold border-b border-neutral-300">Current Charge</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold border-b border-neutral-300">Frequency</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold border-b border-neutral-300">Starts On</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold border-b border-neutral-300">Escalation</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold border-b border-neutral-300">Status</th>
+            <th scope="col" class="px-3 py-2 text-right font-semibold border-b border-neutral-300">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="charge-rows"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div id="app-footer"></div>
+
+  <!-- Edit Charge modal: contents rendered by charge-modal.js -->
+  <div id="charge-modal" role="dialog" aria-modal="true" aria-labelledby="charge-modal-title"
+    class="hidden fixed inset-0 z-40 bg-black/50 overflow-y-auto flex items-start justify-center px-2 sm:px-6"></div>
+
+  <!-- Edit Terms modal: opens instead of the Edit Charge modal, never on top of it -->
+  <div id="terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-modal-title"
+    class="hidden fixed inset-0 z-40 bg-black/50 overflow-y-auto flex items-start justify-center px-2 sm:px-6"></div>
+
+  <!-- New Charge modal: opened by the Add button, a sibling of the two edit popups -->
+  <div id="new-charge-modal" role="dialog" aria-modal="true" aria-labelledby="new-charge-modal-title"
+    class="hidden fixed inset-0 z-40 bg-black/50 overflow-y-auto flex items-start justify-center px-2 sm:px-6"></div>
+
+  <!-- Add New Term modal: sits above the Edit Terms modal -->
+  <div id="term-modal" role="dialog" aria-modal="true" aria-labelledby="term-modal-title"
+    class="hidden fixed inset-0 z-50 bg-black/50 overflow-y-auto flex items-start justify-center px-2 sm:px-6"></div>
+
+  <!-- Rebuild Schedule modal: sits above the other two -->
+  <div id="rebuild-modal" role="dialog" aria-modal="true" aria-labelledby="rebuild-modal-title"
+    class="hidden fixed inset-0 z-[60] bg-black/50 overflow-y-auto flex items-start justify-center px-2 sm:px-6"></div>
+
+  <!-- Confirmation modal: the topmost layer -->
+  <div id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title"
+    class="hidden fixed inset-0 z-[70] bg-black/50 overflow-y-auto flex items-start justify-center px-2 sm:px-6"></div>
+
+  <script>window.PAGE = { tab: 'charges' };</script>
+  <script src="assets/js/partials.js"></script>
+  <script src="assets/js/conditions.js"></script>
+  <script src="assets/js/schedule-preview.js"></script>
+  <script src="assets/js/charge-modal.js"></script>
+  <script src="assets/js/terms-modal.js"></script>
+  <script src="assets/js/new-charge-modal.js"></script>
+  <script src="assets/js/add-term-modal.js"></script>
+  <script src="assets/js/rebuild-modal.js"></script>
+  <script src="assets/js/confirm-modal.js"></script>
+  <script src="assets/js/charges.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!-- Escalations / Schedule preview tables. Mounted by assets/js/schedule-preview.js into
+     any host element, so the Rebuild Schedule popup and the Add New Term popup share it.
+     Both tables sit on the one page, each with its own filters and year pages. -->
+<div class="preview">
+
+  <section data-preview-panel="escalations">
+    <p class="text-sm text-neutral-600 mb-3">Escalations that will be created for this term configuration.</p>
+
+    <div class="preview-tools" data-tools="escalations">
+      <label class="switch">
+        <input type="checkbox" data-filter="older" checked />
+        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        <span>Show older rows</span>
+      </label>
+      <label class="switch">
+        <input type="checkbox" data-filter="terms" />
+        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        <span>All terms</span>
+      </label>
+    </div>
+
+    <div class="scroll-x border border-neutral-300">
+      <table class="min-w-full text-sm rb-table">
+        <caption class="sr-only">Escalations to be created</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="rb-th">Date From</th>
+            <th scope="col" class="rb-th">Date To</th>
+            <th scope="col" class="rb-th">Billing Frequency</th>
+            <th scope="col" class="rb-th">Charge Amount</th>
+            <th scope="col" class="rb-th">Escalation Type</th>
+            <th scope="col" class="rb-th">Escalation Amount</th>
+            <th scope="col" class="rb-th">State</th>
+          </tr>
+        </thead>
+        <tbody data-rows="escalations"></tbody>
+      </table>
+    </div>
+
+    <p class="text-sm text-neutral-500 mt-3" data-empty="escalations" hidden>
+      No escalation rows match the filters.
+    </p>
+
+    <div class="pager" data-pager="escalations" role="group" aria-label="Year pages"></div>
+
+    <template data-row="escalations">
+      <tr>
+        <td class="rb-td" data-cell="dateFrom"></td>
+        <td class="rb-td" data-cell="dateTo"></td>
+        <td class="rb-td" data-cell="billingFrequency"></td>
+        <td class="rb-td rb-num" data-cell="chargeAmount"></td>
+        <td class="rb-td" data-cell="escalationType"></td>
+        <td class="rb-td rb-num" data-cell="escalationAmount"></td>
+        <td class="rb-td"><span class="state" data-cell="state"></span></td>
+      </tr>
+    </template>
+  </section>
+
+  <section data-preview-panel="schedule" class="mt-8">
+    <p class="text-sm text-neutral-600 mb-3">Billing schedule that will be created for this term configuration.</p>
+
+    <div class="preview-tools" data-tools="schedule">
+      <label class="switch">
+        <input type="checkbox" data-filter="older" checked />
+        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        <span>Show older rows</span>
+      </label>
+      <label class="switch">
+        <input type="checkbox" data-filter="terms" />
+        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        <span>All terms</span>
+      </label>
+    </div>
+
+    <div class="scroll-x border border-neutral-300">
+      <table class="min-w-full text-sm rb-table">
+        <caption class="sr-only">Billing schedule to be created</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="rb-th">Bill On Date</th>
+            <th scope="col" class="rb-th">Period From</th>
+            <th scope="col" class="rb-th">Period To</th>
+            <th scope="col" class="rb-th">Total</th>
+            <th scope="col" class="rb-th">Billing Batch</th>
+            <th scope="col" class="rb-th">Adjustment</th>
+            <th scope="col" class="rb-th">Prorated</th>
+            <th scope="col" class="rb-th">State</th>
+          </tr>
+        </thead>
+        <tbody data-rows="schedule"></tbody>
+      </table>
+    </div>
+
+    <p class="text-sm text-neutral-500 mt-3" data-empty="schedule" hidden>
+      No schedule rows match the filters.
+    </p>
+
+    <div class="pager" data-pager="schedule" role="group" aria-label="Year pages"></div>
+
+    <template data-row="schedule">
+      <tr>
+        <td class="rb-td"><span data-cell="billOnDate"></span></td>
+        <td class="rb-td"><span data-cell="periodFrom"></span></td>
+        <td class="rb-td"><span data-cell="periodTo"></span></td>
+        <td class="rb-td rb-num"><span data-cell="Total"></span></td>
+        <td class="rb-td"><span data-cell="billingBatch"></span></td>
+        <td class="rb-td rb-center"><input type="checkbox" disabled aria-label="Adjustment" /></td>
+        <td class="rb-td rb-center" data-flag="prorated"><input type="checkbox" disabled aria-label="Prorated" /></td>
+        <td class="rb-td"><span class="state" data-cell="state"></span></td>
+      </tr>
+    </template>
+  </section>
+</div>

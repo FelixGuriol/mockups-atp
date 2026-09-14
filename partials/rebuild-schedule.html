@@ -1,0 +1,26 @@
+<!-- Rebuild Schedule dialog. Loaded by assets/js/partials.js, filled by assets/js/rebuild-modal.js.
+     Previews what rebuilding would create for a term: the escalations, and the billing schedule. -->
+<div class="modal-panel bg-white w-full max-w-7xl border border-neutral-300 shadow-2xl my-4 sm:my-8"
+  role="document">
+
+  <div class="flex flex-wrap items-center gap-3 px-4 sm:px-6 pt-5 pb-4 border-b border-neutral-200">
+    <h2 id="rebuild-modal-title" class="mr-auto text-xl sm:text-2xl font-normal text-neutral-800">
+      <span data-cell="title">Rebuild Schedule</span>
+      <span class="acc-range" data-cell="range"></span>
+    </h2>
+
+    <button type="button" data-rebuild-close title="Close" aria-label="Close"
+      class="shrink-0 h-9 w-9 flex items-center justify-center border border-neutral-400
+             bg-neutral-700 hover:bg-neutral-900 text-white rounded-sm shadow-sm transition-colors">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    </button>
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6" data-preview-host></div>
+
+  <div class="modal-actions">
+    <button type="button" class="btn" data-rebuild-save>Save</button>
+    <button type="button" class="btn btn-cancel" data-rebuild-close>Cancel</button>
+  </div>
+</div>

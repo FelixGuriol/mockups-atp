@@ -1,0 +1,485 @@
+/* Small helpers layered on top of Tailwind's utility classes. */
+
+body {
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Label / value pairs inside the summary cards */
+.field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.35rem;
+  line-height: 1.45;
+  font-size: 0.8125rem;
+}
+.field dt {
+  font-weight: 700;
+  color: #1f2937;
+}
+.field dd {
+  color: #b45309;
+  margin: 0;
+}
+.field dd.plain {
+  color: #374151;
+}
+
+/* Horizontal scroll containers keep wide tables from breaking the page */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Focus ring consistent with the red brand accent */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #b91c1c;
+  outline-offset: 2px;
+}
+
+@media print {
+  header nav,
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Popup form controls (partials/edit-charge.html). Plain CSS so the partial
+   markup stays readable and the JS never has to juggle class strings.
+   -------------------------------------------------------------------------- */
+
+[hidden] { display: none !important; }
+
+/* Every form control on a row shares this height so they line up. */
+:root { --control-h: 2.5rem; }
+
+/* A popup never grows past the viewport; its body scrolls instead.
+   The margins here match the my-4 / sm:my-8 on the panel itself. */
+.modal-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+}
+@media (min-width: 640px) {
+  .modal-panel { max-height: calc(100vh - 4rem); }
+}
+
+/* Button row pinned to the bottom of a popup, beneath the scrolling body. */
+.modal-actions {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-top: 1px solid #e5e5e5;
+}
+
+/* Same, for a button row that belongs to one sub-tab and so lives inside the
+   scrolling section. Negative margins bleed it out to the section's edges. */
+.modal-footer {
+  position: sticky;
+  /* Must be 0: a negative value parks the row past the scroll container's
+     bottom edge, where the overflow clips it. */
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.5rem -1rem -1rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-top: 1px solid #e5e5e5;
+}
+
+@media (min-width: 640px) {
+  .modal-actions { padding: 0.75rem 1.5rem; }
+  .modal-footer {
+    margin: 1.5rem -1.5rem -1.5rem;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+.f-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 0.25rem;
+}
+.f-req { color: #dc2626; }
+
+.f-input,
+.f-select {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 0.75rem;
+  border: 1px solid #d4d4d4;
+  background: #fff;
+  font-size: 0.875rem;
+  color: #404040;
+}
+.f-input:focus,
+.f-select:focus {
+  outline: none;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35);
+}
+
+/* Fills its row on its own, and stretches when sat beside another control. */
+.f-date {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.f-date .f-input { flex: 1 1 auto; }
+.f-cal {
+  height: var(--control-h);
+  width: var(--control-h);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d4d4d4;
+  border-left: 0;
+  background: #f5f5f5;
+  color: #404040;
+  transition: background-color 0.15s;
+}
+.f-cal:hover { background: #e5e5e5; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #a3a3a3;
+  background: #fff;
+  color: #262626;
+  font-size: 0.875rem;
+  padding: 0.375rem 1rem;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.15s;
+}
+.btn:hover { background: #f5f5f5; }
+
+.btn-cancel {
+  border-color: #f59e0b;
+  background: #fbbf24;
+  font-weight: 500;
+  color: #171717;
+}
+.btn-cancel:hover { background: #f59e0b; }
+
+.btn-xs {
+  border: 1px solid #a3a3a3;
+  background: #fff;
+  color: #262626;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 2px;
+  transition: background-color 0.15s;
+}
+.btn-xs:hover { background: #f5f5f5; }
+
+/* Segmented control: sub-tabs and the No/Yes toggle */
+.seg {
+  display: inline-flex;
+  border: 1px solid #a3a3a3;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.seg button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* less the group's own 1px top and bottom border */
+  min-height: calc(var(--control-h) - 2px);
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  background: #fff;
+  color: #404040;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+}
+.seg button + button { border-left: 1px solid #a3a3a3; }
+.seg button:hover { background: #f5f5f5; }
+.seg button[aria-pressed="true"] {
+  background: #e5e5e5;
+  font-weight: 600;
+  color: #171717;
+}
+
+/* Bordered tables inside the popup */
+.modal-th,
+.modal-td {
+  padding: 0.5rem 0.75rem;
+  border-right: 1px solid #d4d4d4;
+  white-space: nowrap;
+}
+.modal-th {
+  text-align: left;
+  font-weight: 700;
+  color: #262626;
+}
+.modal-td { border-top: 1px solid #d4d4d4; }
+.modal-th:last-child,
+.modal-td:last-child { border-right: 0; }
+
+/* Collapsible field groups inside the popup (<details class="acc">) */
+.acc {
+  border: 1px solid #d4d4d4;
+  margin-bottom: 0.75rem;
+  background: #fff;
+}
+.acc > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: #f5f5f5;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #262626;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  transition: background-color 0.15s;
+}
+.acc > summary::-webkit-details-marker { display: none; }
+.acc > summary:hover { background: #e5e5e5; }
+.acc[open] > summary { border-bottom: 1px solid #d4d4d4; }
+.acc-chevron {
+  flex: 0 0 auto;
+  color: #525252;
+  transition: transform 0.15s;
+}
+.acc[open] .acc-chevron { transform: rotate(90deg); }
+.acc-body { padding: 1rem; }
+
+/* Date range shown beside a term period's name in its summary bar */
+.acc-range {
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: #737373;
+}
+
+/* Read-only fields: visible and selectable, but not editable */
+.f-input[readonly],
+.f-input:disabled,
+.f-select:disabled {
+  background: #f5f5f5;
+  color: #525252;
+  cursor: default;
+}
+.f-select:disabled { opacity: 1; }
+.f-input[readonly]:focus,
+.f-input[readonly]:focus-visible {
+  border-color: #d4d4d4;
+  box-shadow: none;
+}
+.f-cal:disabled {
+  background: #f5f5f5;
+  color: #a3a3a3;
+  cursor: default;
+}
+
+/* Preview tables in the Rebuild Schedule popup */
+.rb-table { border-collapse: collapse; }
+.rb-th {
+  background: #7f97a9;
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 0.375rem 0.625rem;
+  border-right: 1px solid #ffffff;
+}
+.rb-th:last-child { border-right: 0; }
+.rb-td {
+  padding: 0.3125rem 0.625rem;
+  border-top: 1px solid #d4d4d4;
+  color: #1f3a52;
+  white-space: nowrap;
+}
+/* Every row reads the same, so the State badge does the talking. The exception is a
+   row that will be removed: it fades into a red tint, quieter than the rows that stay. */
+.rb-table tbody tr[data-state="Remove"] > .rb-td {
+  background: #fdf2f2;
+  color: #b59191;
+}
+
+.rb-num { text-align: right; font-variant-numeric: tabular-nums; }
+.rb-center { text-align: center; }
+
+/* Proration popover: fixed, so the scrolling table box cannot clip it */
+.rb-prorated { cursor: help; }
+.rb-prorated:focus-visible { outline: 2px solid #b91c1c; outline-offset: -2px; }
+
+.pop {
+  position: fixed;
+  z-index: 100;
+  /* Grows to fit its table - the cells are nowrap, so a fixed cap would clip them. */
+  width: max-content;
+  max-width: calc(100vw - 1rem);
+  /* max-height is set per open, from the room around the cell. */
+  overflow: auto;
+  padding: 0.625rem 0.75rem;
+  background: #fff;
+  border: 1px solid #a3a3a3;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  font-size: 0.8125rem;
+  color: #1f3a52;
+}
+.pop-title {
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 0.375rem;
+}
+.pop-table { border-collapse: collapse; width: 100%; }
+.pop-table th {
+  text-align: left;
+  font-weight: 700;
+  padding: 0.25rem 1rem 0.25rem 0;
+  border-bottom: 1px solid #d4d4d4;
+  white-space: nowrap;
+}
+.pop-table td {
+  padding: 0.25rem 1rem 0.25rem 0;
+  border-bottom: 1px solid #ededed;
+  white-space: nowrap;
+}
+.pop-table tr:last-child td { border-bottom: 0; }
+.pop-table th:last-child,
+.pop-table td:last-child { padding-right: 0; }
+
+/* Inline row editing: a date input inside a table cell stays compact */
+.modal-td .f-input {
+  height: 2rem;
+  width: 9.5rem;
+}
+
+/* A segmented control that cannot be changed */
+.seg button:disabled {
+  color: #a3a3a3;
+  cursor: default;
+}
+.seg button:disabled:hover { background: #fff; }
+.seg button:disabled[aria-pressed="true"] {
+  background: #f0f0f0;
+  color: #737373;
+}
+.seg button:disabled[aria-pressed="true"]:hover { background: #f0f0f0; }
+
+/* Year pagination under the preview tables */
+.pager {
+  display: inline-flex;
+  margin-top: 0.75rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pager button {
+  padding: 0.3125rem 0.75rem;
+  font-size: 0.8125rem;
+  background: #fff;
+  color: #1f4e79;
+  border-right: 1px solid #d4d4d4;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+}
+.pager button:last-child { border-right: 0; }
+.pager button:hover:not(:disabled) { background: #eef3f7; }
+.pager button[aria-current="true"] {
+  background: #4a76b8;
+  color: #fff;
+  font-weight: 600;
+}
+.pager button:disabled {
+  color: #a3a3a3;
+  cursor: default;
+}
+
+/* A textarea shares the input styling but sizes to its rows */
+textarea.f-input {
+  height: auto;
+  min-height: 4.5rem;
+  padding: 0.5rem 0.75rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+/* Row state badge in the preview tables */
+.state {
+  display: inline-block;
+  min-width: 6rem;
+  text-align: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #fff;
+  background: #a3a3a3;
+}
+.state-new { background: #2f855a; }
+.state-modified { background: #e0a13c; }
+.state-remove { background: #c53030; }
+.state-unmodified { background: #94a3b8; }
+
+/* Filter switches above a preview table */
+.preview-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #404040;
+  cursor: pointer;
+  user-select: none;
+}
+/* The checkbox stays in the page so it keeps its keyboard behaviour; the track
+   beside it is what the eye follows. */
+.switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.switch-track {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  width: 2.25rem;
+  height: 1.25rem;
+  padding: 0.125rem;
+  border-radius: 999px;
+  background: #cbd5e1;
+  transition: background-color 0.15s;
+}
+.switch-thumb {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s;
+}
+.switch input:checked + .switch-track { background: #4a76b8; }
+.switch input:checked + .switch-track .switch-thumb { transform: translateX(1rem); }
+.switch input:focus-visible + .switch-track {
+  outline: 2px solid #b91c1c;
+  outline-offset: 2px;
+}
