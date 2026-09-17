@@ -47,6 +47,9 @@ var CHARGES = [
     termPeriods: [
       {
         termsStartDate: '2025/01/01',
+        hasInitialEscalation: 'No',
+        initialEscalationType: '',
+        initialEscalationAmount: '',
         hasInitialAmount: 'Yes',
         initialAmount: '0.01',
         billingFrequency: 'Monthly',
@@ -60,6 +63,9 @@ var CHARGES = [
       },
       {
         termsStartDate: '2026/07/01',
+        hasInitialEscalation: 'Yes',
+        initialEscalationType: 'Fixed',
+        initialEscalationAmount: '59.43',
         hasInitialAmount: 'Yes',
         initialAmount: '891.46',
         billingFrequency: 'Monthly',
@@ -73,6 +79,9 @@ var CHARGES = [
       },
       {
         termsStartDate: '2027/01/01',
+        hasInitialEscalation: 'No',
+        initialEscalationType: '',
+        initialEscalationAmount: '',
         hasInitialAmount: 'Yes',
         initialAmount: '1010.32',
         billingFrequency: 'Monthly',
@@ -334,6 +343,9 @@ function chargeFromForm(values) {
     },
     termPeriods: [{
       termsStartDate: v.termsStartDate,
+      hasInitialEscalation: v.hasInitialEscalation,
+      initialEscalationType: v.hasInitialEscalation === 'Yes' ? v.initialEscalationType : '',
+      initialEscalationAmount: v.hasInitialEscalation === 'Yes' ? v.initialEscalationAmount : '',
       hasInitialAmount: v.hasInitialAmount,
       initialAmount: v.initialAmount,
       billingFrequency: v.billingFrequency,

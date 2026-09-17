@@ -236,7 +236,11 @@ underneath it. A rent adjustment row's Save works the same way.
 
 Current conditional rules: Start Date shows when Starts On is "Other", Escalation
 Amount shows for Fixed or Percentage, and Escalation Anniversary shows when Escalates
-With Lease Commencement is Yes.
+With Lease Commencement is Yes. A term's Initial Escalation (fourth in the term form, beside Billing Frequency) has
+its own No/Yes switch: Yes reveals a type select (Percentage or Fixed only) and its
+amount (`hasInitialEscalation`, `initialEscalationType`, `initialEscalationAmount`).
+New Charge has the same field in the same spot, and a created charge's first term keeps
+what was entered there.
 
 Both panels of Edit Charge exist in the DOM at once, so switching sub-tabs keeps
 whatever was typed. Control styling (`.f-input`, `.btn`, `.seg`, `.modal-th`) lives in

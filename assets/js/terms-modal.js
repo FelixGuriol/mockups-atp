@@ -6,7 +6,7 @@
   /* Fields inside each term period dropdown, filled per period. */
   var PERIOD_FIELDS = ['termsStartDate', 'initialAmount', 'billingFrequency',
     'escalationType', 'escalationAmount', 'escalationFrequency', 'escalationAnniversary',
-    'cpiIndex', 'cpiAdjustment'];
+    'cpiIndex', 'cpiAdjustment', 'initialEscalationType', 'initialEscalationAmount'];
 
   var lastFocus = null;
   var currentCharge = null;

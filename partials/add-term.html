@@ -62,7 +62,24 @@
         </select>
       </div>
 
-      <div class="hidden md:block" aria-hidden="true"></div>
+      <div>
+        <label class="f-label">Initial Escalation</label>
+        <div class="flex gap-2">
+          <div class="seg shrink-0" role="group" aria-label="Has initial escalation"
+            data-toggle-field="hasInitialEscalation">
+            <button type="button" data-yesno="No" aria-pressed="true">No</button>
+            <button type="button" data-yesno="Yes" aria-pressed="false">Yes</button>
+          </div>
+          <!-- Type and amount, as in Escalation Type and Amount; shown only on Yes. -->
+          <div class="flex flex-1 min-w-0 gap-2" data-when-field="hasInitialEscalation" data-when-value="Yes">
+            <select class="f-select min-w-0" data-field="initialEscalationType">
+              <option>Percentage</option>
+              <option>Fixed</option>
+            </select>
+            <input type="text" class="f-input min-w-0" data-field="initialEscalationAmount" placeholder="Escalation Amount" />
+          </div>
+        </div>
+      </div>
 
       <div>
         <label class="f-label"><span class="f-req" aria-hidden="true">*</span> Escalation Frequency (months)</label>
